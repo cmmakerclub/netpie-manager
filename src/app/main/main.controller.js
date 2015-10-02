@@ -23,11 +23,11 @@
     vm.clear = function () {
       // console.log("CLEAR");
       toastr.info("DO NOTHING");
-    }
+    };
 
     vm.generate = function () {
 
-    }
+    };
 
     var storage = $localStorage.$default({ 'netpie_manager': { netpie: {} }, netpieApp: [] });
 
@@ -36,7 +36,7 @@
 
 
     vm.generate = function () {
-      var endpoint = "https://netpie-api.herokuapp.com/api/"
+      var endpoint = "https://netpie-api.herokuapp.com/api/";
       endpoint += $scope.config.netpie.appKey + "/";
       endpoint += $scope.config.netpie.appSecret + "/";
       endpoint += $scope.config.netpie.appId;
