@@ -23,7 +23,7 @@
           Detail
         </md-toolbar>
         <md-progress-circular md-mode="indeterminate" ng-show="loading"></md-progress-circular>
-        <md-card-content layout="column" md-dynamic-height ng-hide="loading">
+        <md-card-content layout="column" md-dynamic-height ng-hide="loadin" ng-show="!failed">
           <md-list class="a">
             <md-subheader class="md-no-sticky">DATA</md-subheader>
             <md-list-item class="md-2-line" ng-repeat="(key, value) in data">
@@ -36,6 +36,7 @@
             </md-list-item>
           </md-list>
         </md-card-content>
+         <h1> {{ appError }} </h1>
       </md-card>
     </md-content>
 

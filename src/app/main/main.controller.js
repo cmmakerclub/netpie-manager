@@ -53,10 +53,13 @@
           storage['netpie_manager'].data = data;
           $scope.data = storage['netpie_manager'].data;
           $scope.loading = false;
-          $scope.appSuccess = "Success";
+          $scope.failed = false;
         })
         .error(function () {
+          console.log("FAILED");
+          storage['netpie_manager'].data = {};
           $scope.loading = false;
+          $scope.failed = true;
           $scope.appError = "Failed: " + arguments[1] + " " + arguments[0];
         });
     }
