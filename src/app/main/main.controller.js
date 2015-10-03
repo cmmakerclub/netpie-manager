@@ -31,9 +31,9 @@
 
     var STORAGE_KEY = 'netpie_manager';
     var _storage = $localStorage.$default({ STORAGE_KEY: { netpie: {} }, netpieApp: [] });
-    var STORAGE = _storage[STORAGE_KEY];
+    var STORAGE = _storage[STORAGE_KEY] || {};
 
-    $scope.config = STORAGE.netpie;
+    $scope.config = STORAGE.netpie || {};
     $scope.latest_device = STORAGE.latest_device;
     $scope.device_count = STORAGE.devices && STORAGE.devices.length || 0; 
 
