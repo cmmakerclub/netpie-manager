@@ -7,7 +7,7 @@
 
   /** @ngInject */
   function MainController($timeout, toastr,
-    $http, $log
+    $http, $log,
     $localStorage, $scope) {
     var vm = this;
     vm.classAnimation = '';
@@ -56,7 +56,7 @@
           data.appId = $scope.config.netpie.appId;
           data.appKey = $scope.config.netpie.appKey;
           data.appSecret = $scope.config.netpie.appSecret;
-          data.prefix = "/"+ appId +"/gearname"
+          data.prefix = "/"+ appId +"/gearname";
           STORAGE.latest_device = data;
           var devices = STORAGE.devices || [];
           devices.push(data);
@@ -74,7 +74,7 @@
           $scope.failed = true;
           $scope.appError = "Failed: " + arguments[1] + " " + arguments[0];
         });
-    }
+    };
 
   }
 
