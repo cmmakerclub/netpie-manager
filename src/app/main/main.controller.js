@@ -7,7 +7,7 @@
 
   /** @ngInject */
   function MainController($timeout, toastr,
-    $http, $log,
+    $http, $log, $window, 
     $localStorage, $scope) {
     var vm = this;
     vm.classAnimation = '';
@@ -23,6 +23,7 @@
     vm.clear = function () {
       $log.debug("CLEAR");
       $localStorage.$reset({});
+      $window.location.reload();
       // toastr.info('Curious?', 'Information');
     };
 
