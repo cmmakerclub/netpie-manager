@@ -22,11 +22,8 @@
 
     vm.clear = function () {
       $log.debug("CLEAR");
+      $localStorage.$reset({});
       // toastr.info('Curious?', 'Information');
-    };
-
-    vm.generate = function () {
-
     };
 
     var STORAGE_KEY = 'netpie_manager';
