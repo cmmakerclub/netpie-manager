@@ -21,7 +21,7 @@
     }
 
     vm.clear = function () {
-      $log.debug("CLEAR");
+      $log.debug("Wipe the data. Reloading..");
       $localStorage.$reset({});
       $window.location.reload();
       // toastr.info('Curious?', 'Information');
