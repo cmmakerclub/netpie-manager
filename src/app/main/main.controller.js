@@ -7,7 +7,7 @@
 
   /** @ngInject */
   function MainController($timeout, toastr,
-    $http,
+    $http, $log
     $localStorage, $scope) {
     var vm = this;
     vm.classAnimation = '';
@@ -21,8 +21,8 @@
     }
 
     vm.clear = function () {
-      // console.log("CLEAR");
-      toastr.info('Curious?', 'Information');
+      $log.debug("CLEAR");
+      // toastr.info('Curious?', 'Information');
     };
 
     vm.generate = function () {
@@ -60,7 +60,7 @@
           STORAGE.latest_device = data;
           var devices = STORAGE.devices || [];
           devices.push(data);
-          console.log(devices);
+          $log.debug(devices);
           STORAGE.devices = devices;
           $scope.device_count = devices.length;
           $scope.latest_device = STORAGE.latest_device;
@@ -68,7 +68,7 @@
           $scope.failed = false;
         })
         .error(function () {
-          console.log("FAILED");
+          $log.debug("FAILED");
           STORAGE.latest_device = {};
           $scope.loading = false;
           $scope.failed = true;
