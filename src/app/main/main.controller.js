@@ -29,8 +29,8 @@
 
     };
 
-    var _storage = $localStorage.$default({ STORAGE_KEY: { netpie: {} }, netpieApp: [] });
     var STORAGE_KEY = 'netpie_manager';
+    var _storage = $localStorage.$default({ STORAGE_KEY: { netpie: {} }, netpieApp: [] });
     var STORAGE = _storage[STORAGE_KEY];
 
     $scope.config = STORAGE.netpie;
