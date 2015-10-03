@@ -4,7 +4,6 @@
 
   angular
     .module('netpieManager')
-    .constant('malarkey', malarkey)
     .constant('toastr', toastr)
     .constant('moment', moment);
 

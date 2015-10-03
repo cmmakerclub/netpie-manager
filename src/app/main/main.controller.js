@@ -22,17 +22,20 @@
 
     vm.clear = function () {
       // console.log("CLEAR");
-      toastr.info("DO NOTHING");
+      toastr.info('Curious?', 'Information');
     };
 
     vm.generate = function () {
 
     };
 
-    var storage = $localStorage.$default({ 'netpie_manager': { netpie: {} }, netpieApp: [] });
+    var _storage = $localStorage.$default({ STORAGE_KEY: { netpie: {} }, netpieApp: [] });
+    var STORAGE_KEY = 'netpie_manager';
+    var STORAGE = _storage[STORAGE_KEY];
 
-    $scope.config = storage.netpie_manager.netpie;
-    $scope.data = storage.netpie_manager.data;
+    $scope.config = STORAGE.netpie;
+    $scope.latest_device = STORAGE.latest_device;
+    $scope.device_count = STORAGE.devices && STORAGE.devices.length || 0; 
 
 
     vm.generate = function () {
@@ -46,18 +49,27 @@
 
       $http.jsonp(endpoint)
         .success(function (data) {
+          var appId = $scope.config.netpie.appId;
           delete data.protocolVersion;
+          delete data.keepalive;
           // delete data.
-          data.prefix = "/"+$scope.config.netpie.appId+"/gearname/"
-          // console.log(data);
-          storage['netpie_manager'].data = data;
-          $scope.data = storage['netpie_manager'].data;
+          data.appId = $scope.config.netpie.appId;
+          data.appKey = $scope.config.netpie.appKey;
+          data.appSecret = $scope.config.netpie.appSecret;
+          data.prefix = "/"+ appId +"/gearname"
+          STORAGE.latest_device = data;
+          var devices = STORAGE.devices || [];
+          devices.push(data);
+          console.log(devices);
+          STORAGE.devices = devices;
+          $scope.device_count = devices.length;
+          $scope.latest_device = STORAGE.latest_device;
           $scope.loading = false;
           $scope.failed = false;
         })
         .error(function () {
           console.log("FAILED");
-          storage['netpie_manager'].data = {};
+          STORAGE.latest_device = {};
           $scope.loading = false;
           $scope.failed = true;
           $scope.appError = "Failed: " + arguments[1] + " " + arguments[0];
