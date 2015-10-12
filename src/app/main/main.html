@@ -1,102 +1,91 @@
-<div layout="column">
+<div layout="row">
   <!-- <md-toolbar layout="row" layout-align="space-around center">  </md-toolbar> -->
 
-  <md-content layout-padding>
+  <!--   <md-content layout-padding>
     <header>
       <acme-navbar creationDate="main.creationDate" />
     </header>
   </md-content>
+ -->
+  <md-sidenav layout="column" class="md-sidenav-left md-whiteframe-z2" md-component-id="left" md-is-locked-open="$mdMedia('gt-md')" md-theme="docs-dark">
+    <md-card>
+      <md-toolbar layout-align="center center">
+        NETPIE Config 
+      </md-toolbar>
 
-  <!-- <div layout="row" class="colorNested">
-  <div>I'm left.</div>
-  <div>I'm right.</div>
-</div>
-<div layout="column" class="colorNested">
-  <div>I'm above.</div>
-  <div>I'm below.</div>
-</div> -->
-  <md-content md-theme="docs-dark" layout="row">
-    <md-content flex md-dynamic-height>
-      <md-card>
+      <md-card-content>
+        <md-input-container>
+          <label>appKey</label>
+          <input ng-model="config.netpie.appKey">
+        </md-input-container>
 
-        <md-toolbar layout-align="center center">
-          Detail ({{device_count}})
-        </md-toolbar>
-        <md-progress-circular md-mode="indeterminate" ng-show="loading"></md-progress-circular>
-        <!-- {{ tabs }} -->
+        <md-input-container>
+          <label>appSecret</label>
+          <input ng-model="config.netpie.appSecret">
+        </md-input-container>
+
+        <md-input-container>
+          <label>appId</label>
+          <input ng-model="config.netpie.appId">
+        </md-input-container>
+        
+    <md-input-container>
+      <label>topic</label>
+      <input ng-model="config.netpie.topic">
+    </md-input-container>
+
+        <md-input-container>
+          <md-button class="md-raised md-hue-5" ng-click="main.generate()">Generate</md-button>
+        </md-input-container>
+        <md-input-container>
+          <md-button class="md-raised md-warn" ng-click="main.clear()">Clear</md-button>
+        </md-input-container>
+      </md-card-content>
+
+    </md-card>
+
+  </md-sidenav>
+
+  <div layout="column" class="relative" layout-fill role="main">
+    <md-content md-theme="docs-dark" layout="row">
+      <md-content flex md-dynamic-height>
+        <md-card>
+          <md-toolbar layout-align="center center">
+            Detail ({{device_count}})
+          </md-toolbar>
+          <md-progress-circular md-mode="indeterminate" ng-show="loading"></md-progress-circular>
+          <!-- {{ tabs }} -->
           <md-content class="md-padding">
             <md-tabs md-selected="selectedIndex" md-border-bottom md-autoselect md-dynamic-height>
-              <md-tab ng-repeat="tab in tabs"
-                      ng-disabled="tab.disabled"
-                      label="{{tab.clientId}}">
-
+              <md-tab ng-repeat="tab in tabs" ng-disabled="tab.disabled" label="{{tab.clientId}}">
                 <div class="demo-tab tab{{$index%4}}" style="padding: 25px; text-align: left;">
                   <!-- <div ng-bind="tab.password"></div> -->
-                    <md-card-content layout="column" md-dynamic-height ng-hide="loading" ng-show="!failed">
-                        <md-list class="a">
-                          <md-content layout="column" class="md-padding">
-                            <div> #define MQTT_USERNAME    "{{latest_device.username}}" </div>
-                            <div> #define MQTT_PASSWORD    "{{latest_device.password}}" </div>
-                            <div> #define MQTT_CLIENT_ID   "{{latest_device.clientId}}" </div>
-                            <div> #define MQTT_PREFIX      "{{latest_device.prefix}}" </div>
-                          </md-content>
-                          <md-subheader class="md-no-sticky">DATA</md-subheader>
-                          <md-list-item class="md-2-line" ng-repeat="(key, value) in latest_device">
-                            <!-- <img ng-src="{{item.face}}?{{$index}}" class="md-avatar" alt="{{item.who}}" /> -->
-                            <div class="md-list-item-text" layout="column">
-                              <h3>{{ key }}</h3>
-                              <!-- <h4>{{ key }}</h4> -->
-                              <p>{{ value }}</p>
-                            </div>
-                          </md-list-item>
-                        </md-list>
-                      </md-card-content>                  
-                  <br/>
+                  <md-card-content layout="column" md-dynamic-height ng-hide="loading" ng-show="!failed">
+                    <md-list class="a">
+                      <md-content layout="column" class="md-padding">
+                        <div> #define MQTT_USERNAME "{{latest_device.username}}" </div>
+                        <div> #define MQTT_PASSWORD "{{latest_device.password}}" </div>
+                        <div> #define MQTT_CLIENT_ID "{{latest_device.clientId}}" </div>
+                        <div> #define MQTT_PREFIX "{{latest_device.prefix}}" </div>
+                      </md-content>
+                      <md-subheader class="md-no-sticky">DATA</md-subheader>
+                      <md-list-item class="md-2-line" ng-repeat="(key, value) in latest_device">
+                        <!-- <img ng-src="{{item.face}}?{{$index}}" class="md-avatar" alt="{{item.who}}" /> -->
+                        <div class="md-list-item-text" layout="column">
+                          <h3>{{ key }}</h3>
+                          <!-- <h4>{{ key }}</h4> -->
+                          <p>{{ value }}</p>
+                        </div>
+                      </md-list-item>
+                    </md-list>
+                  </md-card-content>
                   <!-- <md-button class="md-primary md-raised" ng-click="removeTab( tab )" ng-disabled="tabs.length <= 1">Remove Tab</md-button> -->
                 </div>
               </md-tab>
             </md-tabs>
           </md-content>
-  
-         <h1> {{ appError }} </h1>
-      </md-card>
-    </md-content>
-
-    <md-content flex="35" layout-fill>
-      <md-card>
-        <md-toolbar layout-align="center center">
-          NETPIE
-        </md-toolbar>
-
-        <md-card-content>
-          <md-input-container>
-            <label>appKey</label>
-            <input ng-model="config.netpie.appKey">
-          </md-input-container>
-
-          <md-input-container>
-            <label>appSecret</label>
-            <input ng-model="config.netpie.appSecret">
-          </md-input-container>
-
-          <md-input-container>
-            <label>appId</label>
-            <input ng-model="config.netpie.appId">
-          </md-input-container>
-          <!--
-          <md-input-container>
-            <label>topic</label>
-            <input ng-model="config.netpie.topic">
-          </md-input-container>-->
-
-          <md-input-container>
-            <md-button class="md-raised md-hue-5" ng-click="main.generate()">Generate</md-button>
-          </md-input-container>
-          <md-input-container>
-            <md-button class="md-raised md-warn" ng-click="main.clear()">Clear</md-button>
-          </md-input-container>
-        </md-card-content>
-
-      </md-card>
-    </md-content>
+          <h1> {{ appError }} </h1>
+        </md-card>
+      </md-content>
+  </div>
 </div>
