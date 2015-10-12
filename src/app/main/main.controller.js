@@ -57,6 +57,12 @@
   };
 
 
+
+  $scope.loadDevices = function () {
+    $scope.devices = STORAGE.devices;
+    return STORAGE.devices;
+  }
+
     vm.generate = function () {
       var endpoint = "https://netpie-api.herokuapp.com/api/";
       endpoint += $scope.config.netpie.appKey + "/";
