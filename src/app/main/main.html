@@ -1,19 +1,23 @@
 <div layout="row">
-  <!-- <md-toolbar layout="row" layout-align="space-around center">  </md-toolbar> -->
+  <md-sidenav class="site-sidenav md-sidenav-left md-whiteframe-z2" md-component-id="left" md-is-locked-open="$mdMedia('gt-sm')">
 
-  <!--   <md-content layout-padding>
-    <header>
-      <acme-navbar creationDate="main.creationDate" />
+    <header class="nav-header">
+      <a ng-href="#/" class="docs-logo">
+        <img src="img/icons/angular-logo.svg" alt="" />
+        <h1 class="docs-logotype md-heading">Netpie Manager</h1>
+      </a>
     </header>
-  </md-content>
- -->
-  <md-sidenav layout="column" class="md-sidenav-left md-whiteframe-z2" md-component-id="left" md-is-locked-open="$mdMedia('gt-md')" md-theme="docs-dark">
-    <md-card>
-      <md-toolbar layout-align="center center">
-        NETPIE Config 
-      </md-toolbar>
 
-      <md-card-content>
+    <ul class="skip-links">
+      <li class="md-whiteframe-z2">
+        <md-button ng-click="focusMainContent($event)" href="#">Skip to content</md-button>
+      </li>
+    </ul>
+
+    <md-content flex role="navigation">
+        <md-toolbar layout-align="center center">
+          NETPIE Config
+        </md-toolbar>
         <md-input-container>
           <label>appKey</label>
           <input ng-model="config.netpie.appKey">
@@ -28,11 +32,11 @@
           <label>appId</label>
           <input ng-model="config.netpie.appId">
         </md-input-container>
-        
-    <md-input-container>
-      <label>topic</label>
-      <input ng-model="config.netpie.topic">
-    </md-input-container>
+
+        <md-input-container>
+          <label>topic</label>
+          <input ng-model="config.netpie.topic">
+        </md-input-container>
 
         <md-input-container>
           <md-button class="md-raised md-hue-5" ng-click="main.generate()">Generate</md-button>
@@ -40,13 +44,61 @@
         <md-input-container>
           <md-button class="md-raised md-warn" ng-click="main.clear()">Clear</md-button>
         </md-input-container>
-      </md-card-content>
+        </md-card-content>
 
-    </md-card>
-
+    </md-content>
   </md-sidenav>
 
-  <div layout="column" class="relative" layout-fill role="main">
+
+  <div layout="column" tabIndex="-1" role="main" flex>
+    <md-toolbar class="md-whiteframe-glow-z1 site-content-toolbar">
+
+      <div class="md-toolbar-tools docs-toolbar-tools" ng-click="openMenu()" tabIndex="-1">
+        <md-button class="md-icon-button" hide-gt-sm aria-label="Toggle Menu">
+          <md-icon md-svg-src="img/icons/ic_menu_24px.svg"></md-icon>
+        </md-button>
+        <div layout="row" flex class="fill-height">
+          <h2 class="md-toolbar-item md-breadcrumb md-headline">
+            <span ng-if="menu.currentPage.name !== menu.currentSection.name">
+              <span hide-sm hide-md>{{menu.currentSection.name}} NAME NAME</span>
+              <span class="docs-menu-separator-icon" hide-sm hide-md style="transform: translate3d(0, 1px, 0)">
+                <span class="md-visually-hidden">-</span>
+                <md-icon
+                    aria-hidden="true"
+                    md-svg-src="img/icons/ic_chevron_right_24px.svg"
+                    style="transform:translateY(-2px)"></md-icon>
+              </span>
+            </span>
+            <span class="md-breadcrumb-page">{{menu.currentPage }} BREAD CRUMB</span>
+          </h2>
+
+          <span flex></span>
+          <!-- use up the empty space -->
+
+          <div class="md-toolbar-item docs-tools" layout="row">
+
+            <md-button class="md-icon-button" aria-label="View Source on Github" ng-if="!currentComponent.docs.length" target="_blank"
+            ng-href="{{BUILDCONFIG.repository}}/{{menu.version.current.github}}">
+              <md-tooltip md-autohide>View Source on Github</md-tooltip>
+              <md-icon md-svg-src="img/icons/github.svg" style="color: rgba(255,255,255,0.97);"></md-icon>
+            </md-button>
+            Button
+            <md-button class="md-icon-button" aria-label="View Demo" ng-class="{hide: !currentDoc || !currentDoc.hasDemo}" ng-href="#/demo/{{currentComponent.name}}">
+              <md-icon md-svg-src="img/icons/ic_play_circle_fill_24px.svg" style="fill:green"></md-icon>
+              <md-tooltip>View Demo</md-tooltip>
+            </md-button>
+
+            <md-button aria-label="View Source on Github" class="md-icon-button" ng-class="{hide: !currentDoc}" ng-href="{{currentDoc.githubUrl}}"
+            hide-sm hide-md>
+              <md-icon md-svg-src="img/icons/github.svg" style="color: rgba(255,255,255,0.97);"></md-icon>
+              <md-tooltip>View Source on Github</md-tooltip>
+            </md-button>
+          </div>
+        </div>
+      </div>
+
+    </md-toolbar>
+
     <md-content md-theme="docs-dark" layout="row">
       <md-content flex md-dynamic-height>
         <md-card>
@@ -54,12 +106,10 @@
             Detail ({{device_count}})
           </md-toolbar>
           <md-progress-circular md-mode="indeterminate" ng-show="loading"></md-progress-circular>
-          <!-- {{ tabs }} -->
           <md-content class="md-padding">
             <md-tabs md-selected="selectedIndex" md-border-bottom md-autoselect md-dynamic-height>
               <md-tab ng-repeat="tab in tabs" ng-disabled="tab.disabled" label="{{tab.clientId}}">
                 <div class="demo-tab tab{{$index%4}}" style="padding: 25px; text-align: left;">
-                  <!-- <div ng-bind="tab.password"></div> -->
                   <md-card-content layout="column" md-dynamic-height ng-hide="loading" ng-show="!failed">
                     <md-list class="a">
                       <md-content layout="column" class="md-padding">
@@ -70,16 +120,13 @@
                       </md-content>
                       <md-subheader class="md-no-sticky">DATA</md-subheader>
                       <md-list-item class="md-2-line" ng-repeat="(key, value) in latest_device">
-                        <!-- <img ng-src="{{item.face}}?{{$index}}" class="md-avatar" alt="{{item.who}}" /> -->
                         <div class="md-list-item-text" layout="column">
                           <h3>{{ key }}</h3>
-                          <!-- <h4>{{ key }}</h4> -->
                           <p>{{ value }}</p>
                         </div>
                       </md-list-item>
                     </md-list>
                   </md-card-content>
-                  <!-- <md-button class="md-primary md-raised" ng-click="removeTab( tab )" ng-disabled="tabs.length <= 1">Remove Tab</md-button> -->
                 </div>
               </md-tab>
             </md-tabs>
@@ -87,5 +134,7 @@
           <h1> {{ appError }} </h1>
         </md-card>
       </md-content>
+
   </div>
+
 </div>

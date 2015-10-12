@@ -7,7 +7,7 @@
 
   /** @ngInject */
   function MainController($timeout, toastr,
-    $http, $log, $window, 
+    $http, $log, $window, $mdSidenav,
     $localStorage, $scope) {
     var vm = this;
     vm.classAnimation = '';
@@ -37,6 +37,24 @@
     $scope.device_count = STORAGE.devices && STORAGE.devices.length || 0; 
 
     $scope.tabs = STORAGE.devices;
+
+
+    $scope.openMenu = function() {
+       $timeout(function() { $mdSidenav('left').open(); });
+    }
+
+
+  var mainContentArea = document.querySelector("[role='main']");
+
+  $scope.focusMainContent = function($event) {
+    // prevent skip link from redirecting
+    if ($event) { $event.preventDefault(); }
+
+    $timeout(function(){
+      mainContentArea.focus();
+    },90);
+
+  };
 
 
     vm.generate = function () {
