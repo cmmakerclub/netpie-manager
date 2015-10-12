@@ -23,23 +23,41 @@
           Detail ({{device_count}})
         </md-toolbar>
         <md-progress-circular md-mode="indeterminate" ng-show="loading"></md-progress-circular>
-        <md-card-content layout="column" md-dynamic-height ng-hide="loading" ng-show="!failed">
-          <md-list class="a">
-            <md-subheader class="md-no-sticky">DATA</md-subheader>
-            <md-list-item class="md-2-line" ng-repeat="(key, value) in latest_device">
-              <!-- <img ng-src="{{item.face}}?{{$index}}" class="md-avatar" alt="{{item.who}}" /> -->
-              <div class="md-list-item-text" layout="column">
-                <h3>{{ key }}</h3>
-                <!-- <h4>{{ key }}</h4> -->
-                <p>{{ value }}</p>
-              </div>
-            </md-list-item>
-          </md-list>
-          <div> #define MQTT_USERNAME    "{{latest_device.username}}" </div>
-          <div> #define MQTT_PASSWORD    "{{latest_device.password}}" </div>
-          <div> #define MQTT_CLIENT_ID   "{{latest_device.clientId}}" </div>
-          <div> #define MQTT_PREFIX      "{{latest_device.prefix}}" </div>
-        </md-card-content>
+        <!-- {{ tabs }} -->
+          <md-content class="md-padding">
+            <md-tabs md-selected="selectedIndex" md-border-bottom md-autoselect md-dynamic-height>
+              <md-tab ng-repeat="tab in tabs"
+                      ng-disabled="tab.disabled"
+                      label="{{tab.clientId}}">
+
+                <div class="demo-tab tab{{$index%4}}" style="padding: 25px; text-align: left;">
+                  <!-- <div ng-bind="tab.password"></div> -->
+                    <md-card-content layout="column" md-dynamic-height ng-hide="loading" ng-show="!failed">
+                        <md-list class="a">
+                          <md-content layout="column" class="md-padding">
+                            <div> #define MQTT_USERNAME    "{{latest_device.username}}" </div>
+                            <div> #define MQTT_PASSWORD    "{{latest_device.password}}" </div>
+                            <div> #define MQTT_CLIENT_ID   "{{latest_device.clientId}}" </div>
+                            <div> #define MQTT_PREFIX      "{{latest_device.prefix}}" </div>
+                          </md-content>
+                          <md-subheader class="md-no-sticky">DATA</md-subheader>
+                          <md-list-item class="md-2-line" ng-repeat="(key, value) in latest_device">
+                            <!-- <img ng-src="{{item.face}}?{{$index}}" class="md-avatar" alt="{{item.who}}" /> -->
+                            <div class="md-list-item-text" layout="column">
+                              <h3>{{ key }}</h3>
+                              <!-- <h4>{{ key }}</h4> -->
+                              <p>{{ value }}</p>
+                            </div>
+                          </md-list-item>
+                        </md-list>
+                      </md-card-content>                  
+                  <br/>
+                  <!-- <md-button class="md-primary md-raised" ng-click="removeTab( tab )" ng-disabled="tabs.length <= 1">Remove Tab</md-button> -->
+                </div>
+              </md-tab>
+            </md-tabs>
+          </md-content>
+  
          <h1> {{ appError }} </h1>
       </md-card>
     </md-content>

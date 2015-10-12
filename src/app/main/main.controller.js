@@ -36,6 +36,8 @@
     $scope.latest_device = STORAGE.latest_device;
     $scope.device_count = STORAGE.devices && STORAGE.devices.length || 0; 
 
+    $scope.tabs = STORAGE.devices;
+
 
     vm.generate = function () {
       var endpoint = "https://netpie-api.herokuapp.com/api/";
