@@ -1,107 +1,93 @@
 (function () {
   'use strict';
+    String.prototype.isEmpty = function() {
+        return (this.length === 0 || !this.trim());
+    };
+
+    var guid = function (prefix) {
+      function s4() {
+        return Math.floor((1 + Math.random()) * 0x10000)
+          .toString(16)
+          .substring(1);
+      }
+      return s4() + "-" +new Date().getTime()
+    }
 
   angular
     .module('netpieManager')
     .controller('MainController', MainController);
 
   /** @ngInject */
-  function MainController($timeout, toastr,
-    $http, $log, $window, $mdSidenav,
-    $localStorage, $scope) {
-    var vm = this;
-    vm.classAnimation = '';
+  function MainController($timeout, toastr, $http, $log, 
+      $window, $mdSidenav, $localStorage, $scope) {
 
-    activate();
+      var localStorageDefault = {
+        main: {
+          config: { 
+            prefix: "/ChiangMaiMakerClub",
+            host: "iot.eclipse.org",
+            myName: "",
+            port: 1883
+          },
+          checkbox: { clientId: true, userPass: false },
+          devices: []
+        }
+      };
 
-    function activate() {
-      $timeout(function () {
-        vm.classAnimation = 'rubberBand';
-      }, 4000);
-    }
+      $localStorage.$default(localStorageDefault);
+      $scope.config = $localStorage.main.config;
 
-    vm.clear = function () {
-      $log.debug("Wipe the data. Reloading..");
-      $localStorage.$reset({});
-      $window.location.reload();
-      // toastr.info('Curious?', 'Information');
-    };
+      $scope.tab = $scope.config || {};
+      $scope.checkbox = $localStorage.main.checkbox || {};
 
-    var STORAGE_KEY = 'netpie_manager';
-    var _storage = $localStorage.$default({ 
-      'netpie_manager': { netpie: {} }, netpieApp: [] });
-    var STORAGE = _storage[STORAGE_KEY];
+      $scope.$watch("checkbox.clientId", function  (current, old) {
+        if (current === true) {
+          $scope.config.clientId = guid("cmmc");
+        }
+        else {
+          $scope.config.clientId = "";
+        }
+        // $log.debug("check changed", arguments);
+      });
 
-    $scope.config = STORAGE.netpie;
-    $scope.latest_device = STORAGE.latest_device;
-    $scope.device_count = STORAGE.devices && STORAGE.devices.length || 0; 
+      $scope.tabs = $localStorage.main.devices || [];
+      $scope.device_count = $scope.tabs.length;
+      $scope.selectedIndex = $scope.tabs.length;
 
-    $scope.tabs = STORAGE.devices;
+      this.generate = function() {
+        $log.debug('generate');
+        if ($scope.config.myName.isEmpty()) {
+          $log.error("EMPTY myName");
+        }
+        else {
+
+          if ( !$scope.checkbox.userPass ) {
+            $scope.config.password = "";
+            $scope.config.username = "";
+          }
+
+          var obj = angular.copy($scope.config);
+          $localStorage.main.devices.push(obj);
+          console.log($localStorage.main.devices);
+          $scope.config.clientId = guid("cmmc");
+          $scope.config.myName = "";
+          $scope.tabs = $localStorage.main.devices;
+        }
+      };
+
+      $scope.loadDevices = function () {
+        $scope.devices = $localStorage.main.devices;
+        return $localStorage.main.devices;
+      }
 
 
-    $scope.openMenu = function() {
-       $timeout(function() { $mdSidenav('left').open(); });
-    }
-
-
-  var mainContentArea = document.querySelector("[role='main']");
-
-  $scope.focusMainContent = function($event) {
-    // prevent skip link from redirecting
-    if ($event) { $event.preventDefault(); }
-
-    $timeout(function(){
-      mainContentArea.focus();
-    },90);
-
-  };
-
-
-
-  $scope.loadDevices = function () {
-    $scope.devices = STORAGE.devices;
-    return STORAGE.devices;
-  }
-
-    vm.generate = function () {
-      var endpoint = "https://netpie-api.herokuapp.com/api/";
-      endpoint += $scope.config.netpie.appKey + "/";
-      endpoint += $scope.config.netpie.appSecret + "/";
-      endpoint += $scope.config.netpie.appId;
-      endpoint += "?callback=JSON_CALLBACK";
-
-      $scope.loading = true;
-
-      $http.jsonp(endpoint)
-        .success(function (data) {
-          var appId = $scope.config.netpie.appId;
-          delete data.protocolVersion;
-          delete data.keepalive;
-          // delete data.
-          data.appId = $scope.config.netpie.appId;
-          data.appKey = $scope.config.netpie.appKey;
-          data.appSecret = $scope.config.netpie.appSecret;
-          data.prefix = "/"+ appId +"/gearname";
-          STORAGE.latest_device = data;
-          var devices = STORAGE.devices || [];
-          devices.push(data);
-          $log.debug(devices);
-          STORAGE.devices = devices;
-          $scope.device_count = devices.length;
-          $scope.latest_device = STORAGE.latest_device;
-          $scope.loading = false;
-          $scope.failed = false;
-        })
-        .error(function () {
-          $log.debug("FAILED");
-          STORAGE.latest_device = {};
-          $scope.loading = false;
-          $scope.failed = true;
-          $scope.appError = "Failed: " + arguments[1] + " " + arguments[0];
-        });
-    };
-
-  }
+      this.clear = function() {
+        $log.debug('generate');
+        $localStorage.main.devices = [];
+        $scope.config.clientId = guid("cmmc");
+        $scope.tabs = $localStorage.main.devices;
+      };
+  }// end controller
 
 
 })();

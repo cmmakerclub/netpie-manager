@@ -1,7 +1,7 @@
-<div layout="column" layout-sm="column" >
+<div layout="column" layout-sm="column">
   <!-- <md-toolbar layout="row" layout-align="space-around center">  </md-toolbar> -->
 
-  <md-content layout-padding>
+  <md-content>
     <header>
       <acme-navbar creationDate="main.creationDate" />
     </header>
@@ -24,90 +24,136 @@
         </md-toolbar>
         <md-progress-circular md-mode="indeterminate" ng-show="loading"></md-progress-circular>
         <!-- {{ tabs }} -->
-          <md-content class="md-padding">
-            <md-tabs md-selected="selectedIndex" md-border-bottom md-autoselect md-dynamic-height>
-              <md-tab ng-repeat="tab in tabs"
-                      ng-disabled="tab.disabled"
-                      label="{{tab.clientId}}">
+        <md-content>
+          <md-tabs md-selected="selectedIndex" md-border-bottom md-autoselect md-dynamic-height>
+            <md-tab ng-repeat="tab in tabs" ng-disabled="tab.disabled" label="{{tab.myName}}-{{tab.clientId}}">
 
-                <div class="demo-tab tab{{$index%4}}" style="padding: 25px; text-align: left;">
-                  <!-- <div ng-bind="tab.password"></div> -->
-                    <md-card-content layout=" column" md-dynamic-height ng-hide="loading" ng-show="!failed">
-                        <md-list class="a" aria-expanded="false">
-                          <md-content layout="column" class="md-padding">
-                            <div> #define MQTT_HOST    "{{tab.host}}" </div>
-                            <div> #define MQTT_USERNAME    "{{tab.username}}" </div>
-                            <div> #define MQTT_PASSWORD    "{{tab.password}}" </div>
-                            <div> #define MQTT_CLIENT_ID   "{{tab.clientId}}" </div>
-                            <div> #define MQTT_PREFIX      "{{tab.prefix}}" </div>
-                            <div><qr text="tab | json"></qr></div>
-                              <div layout="column" layout-align="center center" style="height: 100px;">
-                                <md-select placeholder="Who you want to hear?"  ng-model="tab.target_device" 
-                                ng-change md-on-open="loadDevices()" style="min-width: 200px;">
-                                  <md-option ng-value="device.clientId" ng-repeat="device in devices">nickname - {{device.clientId}}</md-option>
-                                </md-select>
-
-                                <div> </div>
-
-                                <!-- <p class="md-caption">You selected the device to: {{ main.netpie ? main.netpie.clientId : 'No one yet' }}</p> -->
-                              </div>
+              <div class="demo-tab tab{{$index%4}}" style="padding: 25px; text-align: left;">
+                <!-- <div ng-bind="tab.password"></div> -->
+                <md-card-content layout=" column" md-dynamic-height ng-hide="loading" ng-show="!failed">
+                  <md-list class="a" aria-expanded="false">
+                    <md-content  layout="column">
+                      <md-content  layout="column">
+                        <div> #define MQTT_HOST "{{tab.host}}" </div>
+                        <div> #define MQTT_PORT "{{tab.port}}" </div>
+                        <div> #define PUBLISH_EVERY 3000 // 5secs</div>
+                        <div><br /></div>
+                        <div> #define MQTT_USERNAME "{{tab.username}}" </div>
+                        <div> #define MQTT_PASSWORD "{{tab.password}}" </div>
+                        <div> #define MQTT_CLIENT_ID "{{tab.clientId}}" </div>
+                        <div> #define MQTT_PREFIX "{{tab.prefix}}" </div>
+                        <div><br /></div>
+                        <div> /* SENSOR INFO */ </div>
+                        <div> #define DEVICE_NAME "{{tab.myName}}"</div>
+                        <div><br /></div>
+                        <div>
                           </md-content>
-                          <md-subheader class="md-no-sticky">DATA</md-subheader>
-                          <md-list-item class="md-2-line" ng-repeat="(key, value) in latest_device">
-                            <!-- <img ng-src="{{item.face}}?{{$index}}" class="md-avatar" alt="{{item.who}}" /> -->
-                            <div class="md-list-item-text" layout="column">
-                              <h3>{{ key }}</h3>
-                              <!-- <h4>{{ key }}</h4> -->
-                              <p>{{ value }}</p>
-                            </div>
-                          </md-list-item>
-                        </md-list>
-                      </md-card-content>                  
-                  <br/>
-                  <!-- <md-button class="md-primary md-raised" ng-click="removeTab( tab )" ng-disabled="tabs.length <= 1">Remove Tab</md-button> -->
-                </div>
-              </md-tab>
-            </md-tabs>
-          </md-content>
-  
-         <h1> {{ appError }} </h1>
+                            <md-divider></md-divider>
+
+  <md-subheader class="md-no-sticky">QR CODE</md-subheader>
+                          <md-content ng-hide="showQRFlag" layout="column" layout-align="center center" >
+                              <qr text="tab | json"></qr>
+                            </md-content>
+                       </div>
+                      <div  layout="column" style="height: 100px;">
+                        <md-select placeholder="Who you want to hear?" ng-model="tab.target_device" ng-change md-on-open="loadDevices()" style="min-width: 200px;">
+                          <md-option ng-value="device.clientId" ng-repeat="device in devices"> {{ device.myName}} - {{device.clientId}}</md-option>
+                        </md-select>
+
+                        <div> </div>
+
+                        <!-- <p class="md-caption">You selected the device to: {{ main.netpie ? main.netpie.clientId : 'No one yet' }}</p> -->
+                      </div>
+                    </md-content>
+                </md-card-content>
+                <br/>
+                <!-- <md-button class="md-primary md-raised" ng-click="removeTab( tab )" ng-disabled="tabs.length <= 1">Remove Tab</md-button> -->
+              </div>
+            </md-tab>
+          </md-tabs>
+        </md-content>
+
+        <h1> {{ appError }} </h1>
       </md-card>
     </md-content>
     <md-content flex>
       <md-card>
-        <md-toolbar layout-align="center center">
-          NETPIE
-        </md-toolbar>
+        <section>
+          <md-content class="md-content-right md-whiteframe-z2" md-component-id="right" layout-align="start center">
+            <md-toolbar class="md-theme-light" layout="row" layout-align="center center">
+              Config
+            </md-toolbar>
+            <md-content layout-padding class="autoScroll">
+              <form ng-submit="closeAndSaveNewConfig(config)">
+                <md-input-container>
+                  <label>myName - DEVICE_NAME</label>
+                  <input ng-model="config.myName" required>
+                </md-input-container>
 
-        <md-card-content>
-          <md-input-container>
-            <label>appKey</label>
-            <input ng-model="config.netpie.appKey">
-          </md-input-container>
+                <md-input-container>
+                  <label>Host</label>
+                  <input ng-model="config.host" required>
+                </md-input-container>
+
+                <md-input-container>
+                  <label>Port</label>
+                  <input ng-model="config.port" required>
+                </md-input-container>
+
+                <md-input-container ng-show="checkbox.userPass">
+                  <label>Username</label>
+                  <input ng-model="config.username">
+                </md-input-container>
+
+                <md-input-container ng-show="checkbox.userPass">
+                  <label>Password</label>
+                  <input ng-model="config.password" type="password">
+                </md-input-container>
+
+                <md-input-container>
+                  <label>clientId</label>
+                  <input ng-model="config.clientId" required>
+                </md-input-container>
+
+                <md-input-container>
+                  <label>prefix</label>
+                  <input ng-model="config.prefix" required>
+                </md-input-container>
+
+                <md-checkbox ng-change ng-model="checkbox.clientId" aria-label="Checkbox 2" class="md-warn md-align-top-left">
+                  autogen clientId
+                </md-checkbox>
+
+                <!--         <md-checkbox ng-model="checkbox.ssl" aria-label="SSL" class="md-warn md-align-top-left">
+          SSL
+          </md-checkbox>
+ -->
+                <md-checkbox ng-model="checkbox.userPass" aria-label="Checkbox 2" class="md-warn md-align-top-left">
+                  <!-- {{ data.cb_auth }} -->
+                  username & password
+                </md-checkbox>
+
+
+                <md-input-container>
+                  <md-button ng-click="main.generate()" class="md-raised">Save</md-button>
+                </md-input-container>
+              </form>
+              <md-input-container>
+                <md-button class="md-raised md-warn" ng-click="main.clear()">Clear All</md-button>
+              </md-input-container>
+            </md-content>
+
+          </md-content>
+        </section>
+        <!--     <md-card-content>
+        Hello WOrld
 
           <md-input-container>
-            <label>appSecret</label>
-            <input ng-model="config.netpie.appSecret">
-          </md-input-container>
-
-          <md-input-container>
-            <label>appId</label>
-            <input ng-model="config.netpie.appId">
-          </md-input-container>
-          <!--
-          <md-input-container>
-            <label>topic</label>
-            <input ng-model="config.netpie.topic">
-          </md-input-container>-->
-
-          <md-input-container>
-            <md-button class="md-raised md-hue-5" ng-click="main.generate()">Generate</md-button>
-          </md-input-container>
           <md-input-container>
             <md-button class="md-raised md-warn" ng-click="main.clear()">Clear</md-button>
           </md-input-container>
         </md-card-content>
 
       </md-card>
-    </md-content>
+    </md-content> -->
 </div>
