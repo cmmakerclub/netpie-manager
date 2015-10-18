@@ -21,6 +21,13 @@
         controller: 'netpieCtrl',
         controllerAs: 'netpieCtrl'
       })
+
+      .state('devices', {
+        url: '/devices',
+        templateUrl: 'app/devices/partials/devices.html',
+        controller: 'devicesCtrl',
+        controllerAs: 'devicesCtrl'
+      })
       ;
 
     $urlRouterProvider.otherwise('/');
