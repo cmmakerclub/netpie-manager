@@ -87,26 +87,6 @@ angular.module('netpieManager')
         $scope.$apply();
       };
       myMqtt.on("message", onMsg);
-      // mqttXYZ.on("message", onMsg);
-      // mqttLWT.on("message", function (topic, payload) {
-      //   var topics = topic.split("/");
-      //   var values = payload.split("|");
-      //   var status = values[0];
-      //   var id = values[1];
-      //   var mac = topics[1];
-
-      //   if (mac && mac === status) {
-      //     status = "online";
-      //   }
-
-      //   vm.LWT[mac || id] = status;
-      //   // vm.devices[mac || id] .status = status;
-      //   if (vm.devices[mac || id]) {
-      //     vm.devices[mac || id].status = status;
-      //     $log.info(vm);
-      //     $scope.$apply();
-      //   }
-      // });
     }
 
     $scope.showDetail = function (ev, deviceUUIDuuid) {
@@ -178,21 +158,6 @@ angular.module('netpieManager')
 
       addListener();
       vm.devices = {};
-
-      // mqttLWT.connect($scope.config).then(mqttLWT.subscribe("/HelloChiangMaiMakerClub/gearname/#/status"));
-      // myMqtt.connect($scope.config).then(myMqtt.subscribe("/HelloChiangMaiMakerClub/gearname/#"));
-      // myMqtt.connect($scope.config).then(myMqtt.subscribe("esp8266/+/status"));
-      // mqttXYZ.connect($scope.config).then(mqttXYZ.subscribe("esp8266/+/status"));
-      // $scope.config = {
-      //   // host: 'cmmc.xyz',
-      //   // port: 9001,
-      //   // clientId
-      //   host: 'gearbroker.netpie.io',
-      //   port: 8083,
-      //   // username: "2syAvlZPSExXY3M%1443015923",
-      //   // password: "Ymyig6VXVNpcXoUrEc+Jl0mpzks=",
-      //   // clientId: "pX1LPwvk6iETiP2Y"
-      // };
 
       angular.forEach($scope.config, function (value, key) {
         if ($scope.config[key] == "") {
