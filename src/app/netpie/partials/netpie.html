@@ -1,4 +1,4 @@
-<div layout="column" layout-sm="column" >
+<div layout="column" layout-sm="column">
   <!-- <md-toolbar layout="row" layout-align="space-around center">  </md-toolbar> -->
 
   <md-content>
@@ -24,32 +24,34 @@
         </md-toolbar>
         <md-progress-circular md-mode="indeterminate" ng-show="loading"></md-progress-circular>
         <!-- {{ tabs }} -->
-          <md-content class="md-padding">
-            <md-tabs md-selected="selectedIndex" md-border-bottom md-autoselect md-dynamic-height>
-              <md-tab ng-repeat="tab in tabs" ng-disabled="tab.disabled" label="{{tab.myName}}-{{tab.clientId}}">
+        <md-content class="md-padding">
+          <md-tabs md-selected="selectedIndex" md-border-bottom md-autoselect md-dynamic-height>
+            <md-tab ng-repeat="tab in tabs" ng-disabled="tab.disabled" label="{{tab.myName}}-{{tab.clientId}}">
 
 
-                <div class="demo-tab tab{{$index%4}}" style="padding: 25px; text-align: left;">
-                  <!-- <div ng-bind="tab.password"></div> -->
+              <div class="demo-tab tab{{$index%4}}" style="padding: 25px; text-align: left;">
+                <!-- <div ng-bind="tab.password"></div> -->
                 <md-card-content layout=" column" md-dynamic-height ng-hide="loading" ng-show="!failed">
                   <md-list class="a" aria-expanded="false">
-                    <md-content  layout="column">
-                      <md-content  layout="column">
+                    <md-content layout="column">
+                      <md-content layout="column">
                         <div> #define MQTT_HOST "{{tab.host}}" </div>
                         <div> #define MQTT_USERNAME "{{tab.username}}" </div>
                         <div> #define MQTT_PASSWORD "{{tab.password}}" </div>
                         <div> #define MQTT_CLIENT_ID "{{tab.clientId}}" </div>
                         <div> #define MQTT_PREFIX "{{tab.prefix}}" </div>
-                        <div><br /></div>
+                        <div>
+                          <br />
+                        </div>
                         <div> /* SENSOR INFO */ </div>
                         <div> #define DEVICE_NAME "{{tab.myName}}"</div>
                         <div>
                       </md-content>
-                      <md-content layout="column" layout-align="center center" layout-padding class-"md-padding">
-                          <qr text="tab | json"></qr>
-                        </md-content>
+                      <md-content layout="column" layout-align="center center" layout-padding class- "md-padding">
+                        <qr text="tab | json"></qr>
+                      </md-content>
                       </div>
-                      <div  layout="column" style="height: 100px;">
+                      <div layout="column" style="height: 100px;">
                         <md-select placeholder="Who you want to hear?" ng-model="tab.target_device" ng-change md-on-open="loadDevices()" style="min-width: 200px;">
                           <md-option ng-value="device.clientId" ng-repeat="device in devices">nickname - {{device.clientId}}</md-option>
                         </md-select>
@@ -61,13 +63,13 @@
                     </md-content>
                 </md-card-content>
                 <br/>
-                  <!-- <md-button class="md-primary md-raised" ng-click="removeTab( tab )" ng-disabled="tabs.length <= 1">Remove Tab</md-button> -->
-                </div>
-              </md-tab>
-            </md-tabs>
-          </md-content>
-  
-         <h1> {{ appError }} </h1>
+                <!-- <md-button class="md-primary md-raised" ng-click="removeTab( tab )" ng-disabled="tabs.length <= 1">Remove Tab</md-button> -->
+              </div>
+            </md-tab>
+          </md-tabs>
+        </md-content>
+
+        <h1> {{ appError }} </h1>
       </md-card>
     </md-content>
     <md-content flex>
@@ -78,10 +80,10 @@
 
         <md-card-content>
 
-            <md-input-container>
-              <label>myName</label>
-              <input ng-model="config.netpie.myName"  required>
-            </md-input-container>
+          <md-input-container>
+            <label>myName</label>
+            <input ng-model="config.netpie.myName" required>
+          </md-input-container>
           <md-input-container>
             <label>appKey</label>
             <input ng-model="config.netpie.appKey">

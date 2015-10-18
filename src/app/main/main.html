@@ -32,30 +32,36 @@
                 <!-- <div ng-bind="tab.password"></div> -->
                 <md-card-content layout=" column" md-dynamic-height ng-hide="loading" ng-show="!failed">
                   <md-list class="a" aria-expanded="false">
-                    <md-content  layout="column">
-                      <md-content  layout="column">
+                    <md-content layout="column">
+                      <md-content layout="column">
                         <div> #define MQTT_HOST "{{tab.host}}" </div>
                         <div> #define MQTT_PORT "{{tab.port}}" </div>
                         <div> #define PUBLISH_EVERY 3000 // 5secs</div>
-                        <div><br /></div>
+                        <div>
+                          <br />
+                        </div>
                         <div> #define MQTT_USERNAME "{{tab.username}}" </div>
                         <div> #define MQTT_PASSWORD "{{tab.password}}" </div>
                         <div> #define MQTT_CLIENT_ID "{{tab.clientId}}" </div>
                         <div> #define MQTT_PREFIX "{{tab.prefix}}" </div>
-                        <div><br /></div>
+                        <div>
+                          <br />
+                        </div>
                         <div> /* SENSOR INFO */ </div>
                         <div> #define DEVICE_NAME "{{tab.myName}}"</div>
-                        <div><br /></div>
                         <div>
-                          </md-content>
-                            <md-divider></md-divider>
+                          <br />
+                        </div>
+                        <div>
+                      </md-content>
+                      <md-divider></md-divider>
 
-  <md-subheader class="md-no-sticky">QR CODE</md-subheader>
-                          <md-content ng-hide="showQRFlag" layout="column" layout-align="center center" >
-                              <qr text="tab | json"></qr>
-                            </md-content>
-                       </div>
-                      <div  layout="column" style="height: 100px;">
+                      <md-subheader class="md-no-sticky">QR CODE</md-subheader>
+                      <md-content ng-hide="showQRFlag" layout="column" layout-align="center center">
+                        <qr text="tab | json"></qr>
+                      </md-content>
+                      </div>
+                      <div layout="column" style="height: 100px;">
                         <md-select placeholder="Who you want to hear?" ng-model="tab.target_device" ng-change md-on-open="loadDevices()" style="min-width: 200px;">
                           <md-option ng-value="device.clientId" ng-repeat="device in devices"> {{ device.myName}} - {{device.clientId}}</md-option>
                         </md-select>
