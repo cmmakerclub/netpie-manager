@@ -6,6 +6,20 @@
  * # devicesCtrl
  * Controller of the netpieManager
  */
+
+String.prototype.isEmpty = function () {
+  return (this.length === 0 || !this.trim());
+};
+
+var guid = function (prefix) {
+  function s4() {
+    return Math.floor((1 + Math.random()) * 0x10000)
+      .toString(16)
+      .substring(1);
+  }
+  return s4() + "-" + new Date().getTime()
+}
+
 angular.module('netpieManager')
   .factory("myMqtt", function (mqttwsProvider) {
     var MQTT = mqttwsProvider({});
@@ -18,7 +32,7 @@ angular.module('netpieManager')
   function DevicesCtrl($scope, $timeout, myMqtt, $localStorage,
     $sessionStorage, $mdSidenav, $mdUtil, $mdDialog, $log) {
     var vm = this;
-    vm.devices = {};
+    $scope.devices = {};
     vm.LWT = {};
 
     var buildToggler = function buildToggler(navID) {
@@ -37,62 +51,117 @@ angular.module('netpieManager')
     $scope.toggleRight = buildToggler('right');
 
     // load config
-    $scope.storage = $localStorage.$default({
-      config: {
-        // host: 'gearbroker.netpie.io',
-        // port: 8083,
-        // username: "BZXrhDBMKutYd68%1443014670",
-        // password: "i4jmEZaflGYzXxxi2g5byEM5VA4=",
-        // clientId: "eqSZOmyJ2oXN4CJs"
+    // $scope.config = $localStorage.$default({
+    //     // host: 'gearbroker.netpie.io',
+    //     // port: 8083,
+    //     // username: "BZXrhDBMKutYd68%1443014670",
+    //     // password: "i4jmEZaflGYzXxxi2g5byEM5VA4=",
+    //     // clientId: "eqSZOmyJ2oXN4CJs"
+    //   }
+    // });
+
+    var localStorageDefault = {
+      devices: {
+        config: {
+          prefix: "/ChiangMaiMakerClub",
+          host: "iot.eclipse.org",
+          myName: "",
+          port: 1883
+        },
+        checkbox: { clientId: true, userPass: false },
+        devices: []
       }
+    };    
+
+    $localStorage.$default(localStorageDefault);
+    $scope.config = $localStorage.devices.config;
+    $scope.checkbox = $localStorage.devices.checkbox || {};
+
+    $scope.$watch("checkbox.clientId", function (current, old) {
+      if (current === true) {
+        $scope.config.clientId = guid("cmmc");
+      }
+      else {
+        $scope.config.clientId = "";
+      }
+      // $log.debug("check changed", arguments);
     });
 
     $scope.closeNav = function () {
       $mdSidenav('right').close()
         .then(function () {
-          $scope.config = angular.extend({}, $scope.storage.config);
+          $scope.config = angular.extend({}, $scope.config);
         });
     };
+
 
     $scope.closeAndSaveNewConfig = function (newConfig) {
 
       $mdSidenav('right').close()
         .then(function () {
-          $scope.storage.config = newConfig;
-          $scope.operations.disconnect();
+          console.log("NEW CONFIG", newConfig);
+          $scope.config = newConfig;
           $scope.connect();
         });
     };
 
-    $scope.config = angular.extend({}, $scope.storage.config);
-
+    // $scope.config = angular.extend({}, $scope.config.config);
     $scope.onlineStatus = "ALL";
     $scope.filterDevice = {};
     $scope.filterDevice.name = "";
 
-    var addListener = function () {
-      var onMsg = function (topic, payload) {
-        // $log.info("topic", topic, payload);
+
+    var onMsg = function (topic, payload) {
+      var topics = topic.split("/");
+
+
+      var incomming_topic  = topics[topics.length-1];
+
+      if (incomming_topic == "online") {
+        console.log("online", topics); 
+        var values = payload.split("|");
+
+        var status = values[0];
+        var id = values[1];
+        var mac = values[1];
+
+        $log.debug('id', id, "mac", mac, "status", status, new Date());
+
+        if (mac && mac === status) {
+          status = "online";
+        }
+
+        vm.LWT[mac || id] = status;
+        // $scope.devices[mac || id] .status = status;
+        if ($scope.devices[mac || id]) {
+          $scope.devices[mac || id].status = status;
+          console.log(vm);
+          $scope.$apply();
+        }
+      }
+      else {
+        // console.log("???", );
         var _payload = JSON.parse(payload);
         var _id2 = _payload.info && _payload.info.id;
-        var _id = _payload.d && _payload.d.id;
+
+      console.log("TOPIC", topics, "PAYLOAD", payload)
+         var _id = _payload.d && _payload.d.id;
+         _payload.status = vm.LWT[_id || _id2] || "ONLINE" || "UNKNOWN";
+         _payload.online = _payload.status !== "DEAD";
+         $scope.devices[_id || _id2] = _payload;
+        delete $scope.devices.undefined;
+         $scope.$apply();
+      }
+    };
 
 
-        // var _id = _id + Math.random();
-        _payload.status = vm.LWT[_id || _id2] || "ONLINE" || "UNKNOWN";
-        _payload.online = _payload.status !== "DEAD";
-
-        vm.devices[_id || _id2] = _payload;
-        delete vm.devices.undefined;
-        $scope.$apply();
-      };
-      myMqtt.on("message", onMsg);
+    var addListener = function () {
     }
 
     $scope.showDetail = function (ev, deviceUUIDuuid) {
       $mdDialog.show({
         controller: DialogController,
-        templateUrl: 'app/main/partials/detail.html',
+        templateUrl: 'app/devices/partials/detail.html',
         parent: angular.element(document.body),
         targetEvent: ev,
         clickOutsideToClose: true,
@@ -124,40 +193,45 @@ angular.module('netpieManager')
       if (!isFirstLogin()) {
         return;
       }
+    	$scope.toggleRight();
 
-      $mdDialog.show({
-        controller: FirstPopupDialogController,
-        templateUrl: 'app/main/partials/firstPopup.html',
-        parent: angular.element(document.body),
-        targetEvent: ev,
-        clickOutsideToClose: false,
-      })
-      .then(function (newConfig) {
 
-        $scope.config = newConfig;
-        $scope.storage.config = newConfig;
-        $mdSidenav('right').open();
+      // $mdDialog.show({
+      //   controller: FirstPopupDialogController,
+      //   templateUrl: 'app/devices/partials/firstPopup.html',
+      //   parent: angular.element(document.body),
+      //   targetEvent: ev,
+      //   clickOutsideToClose: false,
+      // })
+      // .then(function (newConfig) {
 
-      }, function () {
-        $scope.connect();
-      });
+      //   $scope.config = newConfig;
+      //   $scope.config.config = newConfig;
+
+      // }, function () {
+      //   $scope.connect();
+      // });
 
     };
 
     var remmoveDevices = function () {
-      vm.devices = {};
+      $scope.devices = {};
     }
 
     $scope.allDevices = function () {
-      return vm.devices;
+      return $scope.devices;
     }
+
 
     //asynchronously
     $scope.connect = function () {
       $scope.status = "CONNECTING";
+      if (!$scope.checkbox.userPass) {
+        $scope.config.username ="";
+        $scope.config.password = "";
+      }
 
-      addListener();
-      vm.devices = {};
+      $scope.devices = {};
 
       angular.forEach($scope.config, function (value, key) {
         if ($scope.config[key] == "") {
@@ -165,6 +239,8 @@ angular.module('netpieManager')
         }
       })
 
+
+      myMqtt.on("message", onMsg);
 
       var genFailFn = function(type) {
         var failFn = function(error) { 
@@ -177,7 +253,7 @@ angular.module('netpieManager')
 
 
       var callbacks = {
-        "SUBSCRIPTION":  { failFn: genFailFn("SUBSCRIPTION") },
+        "SUBSCRIPTION":   { failFn: genFailFn("SUBSCRIPTION") },
         "CONNECTION":  { failFn: genFailFn("CONNECTION") },
       }
 
@@ -193,26 +269,29 @@ angular.module('netpieManager')
       };
 
       $scope.operations = {
+ //       "subscribe": myMqtt.subscribe("/NatWeerawan/gearname/FpzpfbaVOoAEa7Vp/#"),
         "subscribe": myMqtt.subscribe("/NatWeerawan/gearname/#"),
         "connect":  myMqtt.connect(),
         "config": $scope.config,
         "disconnect": angular.noop,
       };
 
+			// console.log("CONFIG", $scope.operations.config);
       myMqtt.create($scope.operations.config)
-        .then($scope.operations.connect, callbacks.CONNECTION.failFn)
-        .then($scope.operations.subscribe, callbacks.SUBSCRIPTION.failFn)
-        .then(function (mqttClient) { 
-          if (angular.isUndefined(mqttClient)) {
-              $log.debug("CONTROLLER", "UNKNOWN FAILED");
-              $scope.status = "UNKNOWN FAILED";
-          }
-          else {
-            $scope.status = "READY";
-            $scope.operations.disconnect = utils.disconnectGen(mqttClient);
-          }
-        });
+        // .then($scope.operations.connect, callbacks.CONNECTION.failFn)
+        // .then($scope.operations.subscribe, callbacks.SUBSCRIPTION.failFn)
+        // .then(function (mqttClient) { 
+        //   if (angular.isUndefined(mqttClient)) {
+        //       $log.debug("CONTROLLER", "UNKNOWN FAILED");
+        //       $scope.status = "UNKNOWN FAILED";
+        //   }
+        //   else {
+        //     $scope.status = "READY";
+        //     $scope.operations.disconnect = utils.disconnectGen(mqttClient);
+        //   }
+        // });
     }
+
 
     $scope.disconnect = function () {
       // mqttLWT.end(remmoveDevices);

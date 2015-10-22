@@ -23,9 +23,9 @@ angular.module('netpieManager')
                 var useTLS = false;
                 var username = null;
                 var password = null;
-                var cleansession = false;
+                var cleansession = true;
                 var mqttClient;
-                var reconnectTimeout = 2000;
+                var reconnectTimeout = 10000;
                 var events = {};
                 var _options = {};
 
@@ -58,10 +58,11 @@ angular.module('netpieManager')
                         options = angular.extend(_options, options);
                         host = options.host;
                         port = parseInt(options.port, 10);
-                        $log.debug("CREATE", options);
+                        $log.info("CREATE WITH CONFIG", options);
                         if (!options.clientId) {
-                            options.clientId = genClientId("RANDOM");
+                            $log.debug('not providing clientId');
                             $log.debug("PROVIDER"," clientId = ", options.clientId);
+                            options.clientId = genClientId("RANDOM");
                         }
                         mqttClient = new Paho.MQTT.Client(host, port, options.clientId);
                         defer.resolve(mqttClient);
@@ -79,7 +80,7 @@ angular.module('netpieManager')
                             };
 
                             var onFailure = function (message) {
-                                $log.debug(message);
+                                $log.error("ON FAILURE", message);
                                 // $window.setTimeout(wrappedSocket.connect, reconnectTimeout);
                                 defer.reject(message);
                             };

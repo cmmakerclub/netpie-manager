@@ -1,14 +1,11 @@
-<div layout="column" layout-fill class="nat-wrapper">
+<div layout="column" class="nat-devices">
   <!--<md-toolbar layout="row" layout-align="space-around center">-->
-  <md-content layout-padding>
+  <md-content class="devices-wrapper">
     <header>
       <acme-navbar creationDate="main.creationDate" />
     </header>
-
-
+    
     <section class="jumbotron">
-
-
       <div layout="row" layout-align="end center">
 
         <md-input-container>
@@ -34,7 +31,7 @@
 
       {{ status }}
       <div class="techs" layout-align="center">
-        <md-card ng-class="device.status" ng-repeat="(key, device) in main.devices | name:filterDevice.name | status:onlineStatus | orderBy:'status'">
+        <md-card ng-class="device.status" ng-repeat="(key, device) in devices | name:filterDevice.name | status:onlineStatus | orderBy:'status'">
           <div class="thumbnail">
             <!--<img class="pull-right" ng-src="assets/images/{{ device.logo }}" alt="{{ device.title }}">-->
             <div class="caption">

@@ -34,13 +34,15 @@ md-toolbar.md-default-theme {
   background-color: black;
 }
 
+
 section.jumbotron {
   margin-bottom: 30px;
   padding: 1px 30px;
-  background-color: #5aadbb;
+  // background-color: #5aadbb;
   text-align: center;
 
-  color: white;
+  // color: white;
+ 
 
   h1 {
     font-size: 3em;
@@ -50,7 +52,6 @@ section.jumbotron {
 .techs {
   display: flex;
   flex-flow: row wrap;
-
   md-card {
     width: 30%;
 
@@ -58,8 +59,47 @@ section.jumbotron {
       float: right;
       width: 50px;
     }
+    
+    &.DEAD {
+      background: lighten($color: lightsalmon , $amount: 20);
+    }
+    
+    &.ONLINE, &.online {
+      background: lighten($color: lightgreen , $amount: 16);
+    }    
   }
 }
+
+#vertical-container {
+  height: 292px;
+  width: 400px; }
+
+/*
+.repeated-item {
+  border-bottom: 1px solid #ddd;
+  box-sizing: border-box;
+  height: 40px;
+  padding-top: 10px; }
+md-content {
+  margin: 16px; }
+md-virtual-repeat-container {
+  border: solid 1px grey; }
+.md-virtual-repeat-container .md-virtual-repeat-offsetter {
+  padding-left: 16px; }
+  */
+
+.nat-devices, .devices-wrapper {
+  min-height: 800px;
+  
+}
+
+/*.dialog-content {
+  min-height: 30%;
+}
+.a, .b {
+  width: 50%;
+}
+*/
 
 /**
  *  Do not remove this comments bellow. It's the markers used by gulp-inject to inject
