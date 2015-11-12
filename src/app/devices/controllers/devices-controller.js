@@ -32,6 +32,7 @@ angular.module('netpieManager')
 function DevicesCtrl($scope, $timeout, myMqtt, $localStorage,
   $sessionStorage, $mdSidenav, $mdUtil, $mdDialog, $log, $window) {
   var vm = this;
+  var log = $log;
   $scope.devices = {};
   vm.LWT = {};
 
@@ -66,6 +67,7 @@ function DevicesCtrl($scope, $timeout, myMqtt, $localStorage,
     devices: {
       config: {
         prefix: "/ChiangMaiMakerClub",
+        topic_sub: "/ChiangMaiMakerClub",
         host: "iot.eclipse.org",
         myName: "",
         port: 80
@@ -98,7 +100,7 @@ function DevicesCtrl($scope, $timeout, myMqtt, $localStorage,
   };
 
 
-  
+
   $scope.closeAndSaveNewConfig = function (newConfig) {
 
     $mdSidenav('right').close()
@@ -230,19 +232,26 @@ function DevicesCtrl($scope, $timeout, myMqtt, $localStorage,
 
   //asynchronously
   $scope.connect = function () {
-    $scope.status = "CONNECTING";
-    if (!$scope.checkbox.userPass) {
-      $scope.config.username = "";
-      $scope.config.password = "";
+    $scope.status = "Connecting ... ";
+    // $scope.status += "topic = ";
+    $scope.status += $scope.config.topic_sub;
+
+    $log.debug('CHECKBOX', $scope.checkbox);
+   if ($scope.checkbox.userPass === false) {
+      delete $scope.config.username; 
+      delete $scope.config.password;
+    }
+    else {
+     $log.debug('userPass', $scope.config) 
     }
 
     $scope.devices = {};
 
-    angular.forEach($scope.config, function (value, key) {
-      if ($scope.config[key] == "") {
-        delete $scope.config[key];
-      }
-    })
+    // angular.forEach($scope.config, function (value, key) {
+    //   if ($scope.config[key] == "") {
+    //     delete $scope.config[key];
+    //   }
+    // })
 
 
     myMqtt.on("message", onMsg);
@@ -262,50 +271,28 @@ function DevicesCtrl($scope, $timeout, myMqtt, $localStorage,
       "CONNECTION": { failFn: genFailFn("CONNECTION") },
     }
 
-    // var utils = {
-    //   "disconnectGen": function (client) {
-    //     var mqttClient = client;
-    //     var retFn = function () {
-    //       $log.info("disconnection called")
-    //       mqttClient.disconnect();
-    //     };
-    //     return retFn;
-    //   }
-    // };
-
-    // $scope.operations = {
-    // // "subscribe": myMqtt.subscribe("/NatWeerawan/gearname/FpzpfbaVOoAEa7Vp/#"),
-    // //   "subscribe": myMqtt.subscribe("/NatWeerawan/gearname/#"),
-    // //   "connect": myMqtt.connect(),
-    //   "config": $scope.config,
-    // //   "disconnect": angular.noop,
-    // };
-
-    // console.log("CONFIG", $scope.operations.config);
-
-    // myMqtt.create(localStorageDefault.devices.config)
-    var log = $log;
     log.debug('debug', $scope.config);
     myMqtt.create($scope.config)
     .then(function (client) { mqttClient = client; })
-    .then(myMqtt.connect)
-    .then(myMqtt.subscribe($scope.config.topic_sub))
-    .then(function (argument) {
-      console.log("?");
-    })
+    .then(myMqtt.connect, callbacks.CONNECTION.failFn)
+    .then(myMqtt.subscribe($scope.config.topic_sub), callbacks.SUBSCRIPTION.failFn)
+    .then(function (mqttClient) { 
+      if (angular.isUndefined(mqttClient)) {
+          // $log.debug("CONTROLLER", "UNKNOWN FAILED");
+          // $scope.status = "UNKNOWN FAILED";
+      }
+      else {
+        $scope.status = "READY ";
+        $scope.status += "TOPIC = ";
+        $scope.status += $scope.config.topic_sub;
+      }
+    });
     // .then(function (argument) {
     //   console.log("AFTER THEN", mqttClient);
     //   return myMqtt.subscribe();
     // })
     // .then($scope.operations.connect, callbacks.CONNECTION.failFn)
     // .then($scope.operations.subscribe, callbacks.SUBSCRIPTION.failFn)
-    // .then(function (mqttClient) { 
-    //   if (angular.isUndefined(mqttClient)) {
-    //       $log.debug("CONTROLLER", "UNKNOWN FAILED");
-    //       $scope.status = "UNKNOWN FAILED";
-    //   }
-    //   else {
-    //     $scope.status = "READY";
     //     $scope.operations.disconnect = utils.disconnectGen(mqttClient);
     //   }
     // });

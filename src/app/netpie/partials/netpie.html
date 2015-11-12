@@ -53,7 +53,7 @@
                       </div>
                       <div layout="column" style="height: 100px;">
                         <md-select placeholder="Who you want to hear?" ng-model="tab.target_device" ng-change md-on-open="loadDevices()" style="min-width: 200px;">
-                          <md-option ng-value="device.clientId" ng-repeat="device in devices">nickname - {{device.clientId}}</md-option>
+                          <md-option ng-value="device.clientId" ng-repeat="device in devices">{{ device.myName }} - {{device.clientId}}</md-option>
                         </md-select>
 
                         <div> </div>
