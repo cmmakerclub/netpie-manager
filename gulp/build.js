@@ -14,9 +14,9 @@ gulp.task('partials', function () {
     path.join(conf.paths.tmp, '/serve/app/**/*.html')
   ])
     .pipe($.minifyHtml({
-      empty: false,
-      spare: false,
-      quotes: false 
+      empty: true,
+      spare: true,
+      quotes: true
     }))
     .pipe($.angularTemplatecache('templateCacheHtml.js', {
       module: 'netpieManager',
@@ -47,7 +47,7 @@ gulp.task('html', ['inject', 'partials'], function () {
     .pipe($.uglify({ preserveComments: $.uglifySaveLicense })).on('error', conf.errorHandler('Uglify'))
     .pipe(jsFilter.restore())
     .pipe(cssFilter)
-    .pipe($.csso())
+    // .pipe($.csso())
     .pipe(cssFilter.restore())
     .pipe(assets.restore())
     .pipe($.useref())
