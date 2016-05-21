@@ -35,7 +35,7 @@
                   <md-list class="a" aria-expanded="false">
                     <md-content layout="column">
                       <md-content layout="column">
-                        <div> #define MQTT_HOST "{{tab.host}}" </div>
+                        <div> #define MQTT_HOST "gb.netpie.io" </div>
                         <div> #define MQTT_USERNAME "{{tab.username}}" </div>
                         <div> #define MQTT_PASSWORD "{{tab.password}}" </div>
                         <div> #define MQTT_CLIENT_ID "{{tab.clientId}}" </div>
@@ -49,10 +49,9 @@
                         <div>
                       </md-content>
                       <md-content layout="column" layout-align="center center" layout-padding class- "md-padding">
-                        <div>mosquitto_sub -i "{{tab.clientId}}" -u "{{tab.username}}"
-  -P "{{tab.password}}" -h "{{tab.host}}" -t "{{tab.prefix}}"</div>
-
                         <qr text="tab | json"></qr>
+                        <div>mosquitto_sub -i "{{tab.clientId}}" -u "{{tab.username}}"
+  -P "{{tab.password}}" -h "gb.netpie.io" -t "{{tab.prefix}}"</div>
                       </md-content>
                       </div>
                       <div layout="column" style="height: 100px;">
