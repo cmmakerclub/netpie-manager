@@ -40,9 +40,7 @@
                         <div> #define MQTT_PASSWORD "{{tab.password}}" </div>
                         <div> #define MQTT_CLIENT_ID "{{tab.clientId}}" </div>
                         <div> #define MQTT_PREFIX "{{tab.prefix}}" </div>
-                        <div>mosquitto_sub -i "{{tab.clientId}} -u "{{tab.username}}
-                          -P "{{tab.password}}" -h "{{tab.host}} -t "{{tab.prefix}}"</div>
-                          <div> </div>
+                        <div> </div>
                         <div>
                           <br />
                         </div>
@@ -51,6 +49,9 @@
                         <div>
                       </md-content>
                       <md-content layout="column" layout-align="center center" layout-padding class- "md-padding">
+                        <div>mosquitto_sub -i "{{tab.clientId}}" -u "{{tab.username}}"
+  -P "{{tab.password}}" -h "{{tab.host}}" -t "{{tab.prefix}}"</div>
+
                         <qr text="tab | json"></qr>
                       </md-content>
                       </div>
