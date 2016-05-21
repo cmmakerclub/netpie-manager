@@ -14,9 +14,9 @@ gulp.task('partials', function () {
     path.join(conf.paths.tmp, '/serve/app/**/*.html')
   ])
     .pipe($.minifyHtml({
-      empty: true,
-      spare: true,
-      quotes: true
+      empty: false,
+      spare: false,
+      quotes: false
     }))
     .pipe($.angularTemplatecache('templateCacheHtml.js', {
       module: 'netpieManager',
@@ -54,10 +54,10 @@ gulp.task('html', ['inject', 'partials'], function () {
     .pipe($.revReplace())
     .pipe(htmlFilter)
     .pipe($.minifyHtml({
-      empty: true,
-      spare: true,
-      quotes: true,
-      conditionals: true
+      empty: false,
+      spare: false,
+      quotes: false,
+      conditionals: false
     }))
     .pipe(htmlFilter.restore())
     .pipe(gulp.dest(path.join(conf.paths.dist, '/')))
