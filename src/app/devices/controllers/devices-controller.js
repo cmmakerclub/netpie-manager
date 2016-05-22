@@ -66,8 +66,8 @@ function DevicesCtrl($scope, $timeout, myMqtt, $localStorage,
   var localStorageDefault = {
     devices: {
       config: {
-        prefix: "/ChiangMaiMakerClub",
-        topic_sub: "/ChiangMaiMakerClub",
+        prefix: "/CMMC",
+        topic_sub: "/CMMC/#",
         host: "mqtt.espert.io",
         myName: "",
         port: 8000
