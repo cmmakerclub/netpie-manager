@@ -81,7 +81,6 @@ function DevicesCtrl($scope, $timeout, myMqtt, $localStorage,
   $scope.config = $localStorage.devices.config;
   $scope.checkbox = $localStorage.devices.checkbox || {};
 
-
   $scope.$watch("checkbox.clientId", function (current, old) {
     if (current === true) {
       $scope.config.clientId = guid("cmmc");
@@ -119,6 +118,7 @@ function DevicesCtrl($scope, $timeout, myMqtt, $localStorage,
 
 
     var onMsg = function (topic, payload) {
+      console.log("onMessage", topic);
       try {
       var topics = topic.split("/");
       // console.log(topics)
