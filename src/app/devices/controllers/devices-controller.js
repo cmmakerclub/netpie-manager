@@ -68,9 +68,9 @@ function DevicesCtrl($scope, $timeout, myMqtt, $localStorage,
       config: {
         prefix: "/ChiangMaiMakerClub",
         topic_sub: "/ChiangMaiMakerClub",
-        host: "iot.eclipse.org",
+        host: "mqtt.espert.io",
         myName: "",
-        port: 80
+        port: 8000
       },
       checkbox: { clientId: true, userPass: false },
       devices: []
