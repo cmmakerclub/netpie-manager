@@ -81,6 +81,7 @@ function DevicesCtrl($scope, $timeout, myMqtt, $localStorage,
   $scope.config = $localStorage.devices.config;
   $scope.checkbox = $localStorage.devices.checkbox || {};
 
+
   $scope.$watch("checkbox.clientId", function (current, old) {
     if (current === true) {
       $scope.config.clientId = guid("cmmc");
@@ -117,59 +118,49 @@ function DevicesCtrl($scope, $timeout, myMqtt, $localStorage,
   $scope.filterDevice.name = "";
 
 
-    var onMsg = function (topic, payload) {
-      console.log("onMessage", topic);
-      try {
-      var topics = topic.split("/");
-      // console.log(topics)
-      var max_depth = topics.length -1;
+  var onMsg = function (topic, payload) {
+    var topics = topic.split("/");
 
-      var incomming_topic  = topics[max_depth];
 
-      if (incomming_topic == "online") {
-        console.log("online", topics); 
-        var values = payload.split("|");
+    var incomming_topic = topics[topics.length - 1];
 
-        var status = values[0];
-        var id = values[1];
-        var mac = values[1];
-        $log.debug('id', id, "mac", mac, "status", status, new Date());
+    if (incomming_topic == "online") {
+      console.log("online", topics);
+      var values = payload.split("|");
 
-        if (mac && mac === status) {
-          status = "online";
-        }
+      var status = values[0];
+      var id = values[1];
+      var mac = values[1];
 
-        vm.LWT[mac || id] = status;
-        // vm.devices[mac || id] .status = status;
-        if (vm.devices[mac || id]) {
-          vm.devices[mac || id].status = status;
-          console.log(vm);
-          $scope.$apply();
-        }
+      $log.debug('id', id, "mac", mac, "status", status, new Date());
+
+      if (mac && mac === status) {
+        status = "online";
       }
-      else {
-        try {
-          var _payload = JSON.parse(payload);
-          var _id2 = _payload.info && _payload.info.id;
-          var _id = _payload.d && _payload.d.id;
-          _payload.status = vm.LWT[_id || _id2] || "ONLINE" || "UNKNOWN";
-          _payload.online = _payload.status !== "DEAD";
-          vm.devices[_id || _id2] = _payload;
-          delete vm.devices.undefined;
-          $scope.$apply();
-        }
-        catch(exception) {
-          console.log("Exception: ");
-          console.log("=====", payload);
-        }
+
+      vm.LWT[mac || id] = status;
+      // $scope.devices[mac || id] .status = status;
+      if ($scope.devices[mac || id]) {
+        $scope.devices[mac || id].status = status;
+        console.log(vm);
+        $scope.$apply();
       }
     }
-    catch (ex) {
-      console.log("EXCEPTION!!!", ex);
-      console.log("EXCEPTION!!!", ex);
-      console.log("EXCEPTION!!!", ex);
+    else {
+      // console.log("???", );
+      var _payload = JSON.parse(payload);
+      var _id2 = _payload.info && _payload.info.id;
+
+      console.log("TOPIC", topics, "PAYLOAD", payload)
+      var _id = _payload.d && _payload.d.id;
+      _payload.status = vm.LWT[_id || _id2] || "ONLINE" || "UNKNOWN";
+      _payload.online = _payload.status !== "DEAD";
+      $scope.devices[_id || _id2] = _payload;
+      delete $scope.devices.undefined;
+      $scope.$apply();
     }
-    };
+  };
+
 
   var addListener = function () {
   }
