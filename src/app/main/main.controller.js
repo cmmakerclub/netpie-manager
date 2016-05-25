@@ -11,7 +11,7 @@
         .substring(1);
     }
     return s4() + "-" + new Date().getTime()
-  }
+  };  
 
   angular
     .module('netpieManager')

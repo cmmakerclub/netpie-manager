@@ -8,9 +8,9 @@
  */
 var STORAGE_KEY = 'netpie_manager';
 angular.module('netpieManager')
-  .controller('netpieCtrl', function ($timeout, toastr, $http, $log, $window, $mdSidenav, $localStorage, $scope)  {
+  .controller('netpieCtrl', function ($timeout, toastr, $http, $log, $window, $mdSidenav, $localStorage, $scope) {
     var vm = this;
-  	
+
     vm.generate = function () {
       var endpoint = "https://netpie-api.herokuapp.com/api/";
       endpoint += $scope.config.netpie.appKey + "/";
@@ -30,7 +30,7 @@ angular.module('netpieManager')
           data.appKey = $scope.config.netpie.appKey;
           data.appSecret = $scope.config.netpie.appSecret;
           data.myName = $scope.config.netpie.myName;
-          data.prefix = "/"+ appId +"/gearname";
+          data.prefix = "/" + appId + "/gearname";
           STORAGE.latest_device = data;
           var devices = STORAGE.devices || [];
           devices.push(data);
@@ -49,7 +49,7 @@ angular.module('netpieManager')
           $scope.appError = "Failed: " + arguments[1] + " " + arguments[0];
         });
     };
-    
+
     vm.clear = function () {
       $log.debug("Wipe the data. Reloading..");
       $localStorage.$reset({});
@@ -57,32 +57,37 @@ angular.module('netpieManager')
       // toastr.info('Curious?', 'Information');
     };
 
-    var _storage = $localStorage.$default({ 
-      'netpie_manager': { netpie: {} }, netpieApp: [] });
+    var _storage = $localStorage.$default({
+      'netpie_manager': {netpie: {}}, netpieApp: []
+    });
     var STORAGE = _storage[STORAGE_KEY];
 
     $scope.config = STORAGE.netpie;
     $scope.latest_device = STORAGE.latest_device;
-    $scope.device_count = STORAGE.devices && STORAGE.devices.length || 0; 
+    $scope.device_count = STORAGE.devices && STORAGE.devices.length || 0;
 
     $scope.tabs = STORAGE.devices || [];
-    $scope.selectedIndex = $scope.tabs.length -1;
+    $scope.selectedIndex = $scope.tabs.length - 1;
 
 
-    $scope.openMenu = function() {
-       $timeout(function() { $mdSidenav('left').open(); });
+    $scope.openMenu = function () {
+      $timeout(function () {
+        $mdSidenav('left').open();
+      });
     };
 
 
     var mainContentArea = document.querySelector("[role='main']");
 
-    $scope.focusMainContent = function($event) {
+    $scope.focusMainContent = function ($event) {
       // prevent skip link from redirecting
-      if ($event) { $event.preventDefault(); }
+      if ($event) {
+        $event.preventDefault();
+      }
 
-      $timeout(function(){
+      $timeout(function () {
         mainContentArea.focus();
-      },90);
+      }, 90);
 
     };
 
@@ -91,5 +96,5 @@ angular.module('netpieManager')
       return STORAGE.devices;
     }
 
-    
+
   });

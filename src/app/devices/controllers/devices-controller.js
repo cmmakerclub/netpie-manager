@@ -238,11 +238,11 @@ function DevicesCtrl($scope, $timeout, myMqtt, $localStorage,
 
     $log.debug('CHECKBOX', $scope.checkbox);
    if ($scope.checkbox.userPass === false) {
-      delete $scope.config.username; 
+      delete $scope.config.username;
       delete $scope.config.password;
     }
     else {
-     $log.debug('userPass', $scope.config) 
+     $log.debug('userPass', $scope.config)
     }
 
     $scope.devices = {};
@@ -276,7 +276,7 @@ function DevicesCtrl($scope, $timeout, myMqtt, $localStorage,
     .then(function (client) { mqttClient = client; })
     .then(myMqtt.connect, callbacks.CONNECTION.failFn)
     .then(myMqtt.subscribe($scope.config.topic_sub), callbacks.SUBSCRIPTION.failFn)
-    .then(function (mqttClient) { 
+    .then(function (mqttClient) {
       if (angular.isUndefined(mqttClient)) {
           // $log.debug("CONTROLLER", "UNKNOWN FAILED");
           // $scope.status = "UNKNOWN FAILED";
